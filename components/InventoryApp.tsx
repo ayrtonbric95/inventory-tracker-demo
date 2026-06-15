@@ -78,27 +78,27 @@ const LOCATIONS: { key: LocationKey; label: string }[] = [
 // Flavour family per tea + how each family's demand swings by season — powers
 // the "Auto seasonality" button locally (no API needed).
 const SEASON_CAT: Record<string, string> = {
-  mint: "cool", mango: "cool", lagoon: "cool", paradise: "cool", keylime: "cool", darj: "cool",
-  chai: "warm", cocoa: "warm", cider: "warm", blackforest: "warm", oolong: "warm", mate: "warm",
-  rose: "floral", rosebud: "floral", lavender: "floral", radiant: "floral", tummy: "floral",
-  matcha: "green", bluematcha: "green",
+  breakfast: "cool", sencha: "cool", jasmine: "cool",
+  earlgrey: "warm", oolong: "warm", gingerdigest: "warm",
+  peony: "floral", chamomile: "floral",
+  ceremonial: "green", gingermatcha: "green",
 };
 const SEASON_MULT: Record<string, Record<string, number>> = {
-  cool:   { spring: 1.05, summer: 1.35, fall: 0.9,  winter: 0.8 },  // iced / fruity / mint
-  warm:   { spring: 0.95, summer: 0.8,  fall: 1.2,  winter: 1.35 }, // spiced / dessert / chai
-  floral: { spring: 1.3,  summer: 1.05, fall: 0.95, winter: 1.0 },  // florals / detox
+  cool:   { spring: 1.05, summer: 1.35, fall: 0.9,  winter: 0.8 },  // iced / green / breakfast
+  warm:   { spring: 0.95, summer: 0.8,  fall: 1.2,  winter: 1.35 }, // spiced / black / digestive
+  floral: { spring: 1.3,  summer: 1.05, fall: 0.95, winter: 1.0 },  // florals / white
   green:  { spring: 1.05, summer: 1.15, fall: 1.0,  winter: 1.0 },  // matcha / green
 };
 
 // Base tea type per tea, sourced from each product's Shopify tag ("Type - Origin")
 // on 2026-06-13. Drives the colour-coded grouping in the inventory lists.
 const TEA_TYPE: Record<string, string> = {
-  darj: "Black", mango: "Black", blackforest: "Black",
-  mint: "Green", paradise: "Green", keylime: "Green", lavender: "Green",
+  earlgrey: "Black", breakfast: "Black",
   oolong: "Oolong",
-  radiant: "White", rose: "White",
-  matcha: "Matcha", chai: "Matcha", bluematcha: "Matcha",
-  tummy: "Herbal", lagoon: "Herbal", cider: "Herbal", mate: "Herbal", cocoa: "Herbal", rosebud: "Herbal",
+  sencha: "Green", jasmine: "Green",
+  ceremonial: "Matcha", gingermatcha: "Matcha",
+  peony: "White",
+  chamomile: "Herbal", gingerdigest: "Herbal",
 };
 
 // Display order + subtle row tint / left-accent colour per type.
@@ -129,116 +129,63 @@ function groupByType<T extends { id: string }>(lines: T[]): { type: string; item
 // Finished bag counts seeded from the live Shopify pull on 2026-06-13;
 // "Sync finished from Shopify" refreshes them. Raw/lead/vel are app-managed.
 const SEED: Row[] = [
-  { id: "mint", name: "Moroccan Mint", raw: 1800, lead: 21, vel: 13, sizes: [
+  { id: "earlgrey", name: "Earl Grey Reserve", raw: 1800, lead: 21, vel: 15, sizes: [
     { variantId: "gid://shopify/ProductVariant/10001", label: "1 oz", grams: 28, bags: 11 },
     { variantId: "gid://shopify/ProductVariant/10002", label: "2 oz", grams: 57, bags: 12 },
     { variantId: "gid://shopify/ProductVariant/10003", label: "4 oz", grams: 113, bags: 13 },
     { variantId: "gid://shopify/ProductVariant/10004", label: "8 oz", grams: 227, bags: 7 },
   ] },
-  { id: "darj", name: "Apricot Darjeeling", raw: 900, lead: 21, vel: 16, sizes: [
+  { id: "breakfast", name: "English Breakfast Bold", raw: 1600, lead: 21, vel: 12, sizes: [
     { variantId: "gid://shopify/ProductVariant/10005", label: "1 oz", grams: 28, bags: 10 },
     { variantId: "gid://shopify/ProductVariant/10006", label: "2 oz", grams: 57, bags: 8 },
     { variantId: "gid://shopify/ProductVariant/10007", label: "4 oz", grams: 113, bags: 5 },
     { variantId: "gid://shopify/ProductVariant/10008", label: "8 oz", grams: 227, bags: 3 },
   ] },
-  { id: "tummy", name: "Tranquil Tummy", raw: 1200, lead: 18, vel: 18, sizes: [
+  { id: "oolong", name: "Toasted Oolong", raw: 900, lead: 21, vel: 8, sizes: [
     { variantId: "gid://shopify/ProductVariant/10009", label: "1 oz", grams: 28, bags: 8 },
-    { variantId: "gid://shopify/ProductVariant/10010", label: "2 oz", grams: 57, bags: 8 },
-    { variantId: "gid://shopify/ProductVariant/10011", label: "4 oz", grams: 113, bags: 4 },
-    { variantId: "gid://shopify/ProductVariant/10012", label: "8 oz", grams: 227, bags: 9 },
+    { variantId: "gid://shopify/ProductVariant/10010", label: "2 oz", grams: 57, bags: 10 },
+    { variantId: "gid://shopify/ProductVariant/10011", label: "4 oz", grams: 113, bags: 8 },
+    { variantId: "gid://shopify/ProductVariant/10012", label: "8 oz", grams: 227, bags: 4 },
   ] },
-  { id: "paradise", name: "Mornings In Paradise", raw: 1100, lead: 18, vel: 14, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10013", label: "1 oz", grams: 28, bags: 7 },
-    { variantId: "gid://shopify/ProductVariant/10014", label: "2 oz", grams: 57, bags: 5 },
-    { variantId: "gid://shopify/ProductVariant/10015", label: "4 oz", grams: 113, bags: 8 },
-    { variantId: "gid://shopify/ProductVariant/10016", label: "8 oz", grams: 227, bags: 3 },
+  { id: "sencha", name: "Sencha Garden Green", raw: 1800, lead: 21, vel: 13, sizes: [
+    { variantId: "gid://shopify/ProductVariant/10013", label: "1 oz", grams: 28, bags: 9 },
+    { variantId: "gid://shopify/ProductVariant/10014", label: "2 oz", grams: 57, bags: 14 },
+    { variantId: "gid://shopify/ProductVariant/10015", label: "4 oz", grams: 113, bags: 5 },
+    { variantId: "gid://shopify/ProductVariant/10016", label: "8 oz", grams: 227, bags: 4 },
   ] },
-  { id: "mango", name: "Thai Fiery Mango", raw: 2200, lead: 18, vel: 11, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10017", label: "1 oz", grams: 28, bags: 8 },
-    { variantId: "gid://shopify/ProductVariant/10018", label: "2 oz", grams: 57, bags: 20 },
-    { variantId: "gid://shopify/ProductVariant/10019", label: "4 oz", grams: 113, bags: 12 },
-    { variantId: "gid://shopify/ProductVariant/10020", label: "8 oz", grams: 227, bags: 2 },
+  { id: "jasmine", name: "Jasmine Pearl Green", raw: 1200, lead: 18, vel: 9, sizes: [
+    { variantId: "gid://shopify/ProductVariant/10017", label: "1 oz", grams: 28, bags: 7 },
+    { variantId: "gid://shopify/ProductVariant/10018", label: "2 oz", grams: 57, bags: 5 },
+    { variantId: "gid://shopify/ProductVariant/10019", label: "4 oz", grams: 113, bags: 8 },
+    { variantId: "gid://shopify/ProductVariant/10020", label: "8 oz", grams: 227, bags: 3 },
   ] },
-  { id: "lagoon", name: "Tropical Blue Lagoon", raw: 1000, lead: 18, vel: 7, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10021", label: "1 oz", grams: 28, bags: 9 },
-    { variantId: "gid://shopify/ProductVariant/10022", label: "2 oz", grams: 57, bags: 14 },
-    { variantId: "gid://shopify/ProductVariant/10023", label: "4 oz", grams: 113, bags: 5 },
-    { variantId: "gid://shopify/ProductVariant/10024", label: "8 oz", grams: 227, bags: 4 },
+  { id: "ceremonial", name: "Ceremonial Matcha", raw: 500, lead: 30, vel: 9, sizes: [
+    { variantId: "gid://shopify/ProductVariant/10021", label: "1 oz", grams: 28, bags: 22 },
+    { variantId: "gid://shopify/ProductVariant/10022", label: "2 oz", grams: 57, bags: 5 },
+    { variantId: "gid://shopify/ProductVariant/10023", label: "3.5 oz", grams: 99, bags: 3 },
   ] },
-  { id: "keylime", name: "Silky Key Lime Pie", raw: 700, lead: 18, vel: 8, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10025", label: "1 oz", grams: 28, bags: 10 },
-    { variantId: "gid://shopify/ProductVariant/10026", label: "2 oz", grams: 57, bags: 6 },
-    { variantId: "gid://shopify/ProductVariant/10027", label: "4 oz", grams: 113, bags: 12 },
-    { variantId: "gid://shopify/ProductVariant/10028", label: "8 oz", grams: 227, bags: 3 },
+  { id: "gingermatcha", name: "Ginger Citrus Matcha", raw: 450, lead: 30, vel: 6, sizes: [
+    { variantId: "gid://shopify/ProductVariant/10024", label: "1 oz", grams: 28, bags: 17 },
+    { variantId: "gid://shopify/ProductVariant/10025", label: "2 oz", grams: 57, bags: 8 },
+    { variantId: "gid://shopify/ProductVariant/10026", label: "3.5 oz", grams: 99, bags: 4 },
   ] },
-  { id: "blackforest", name: "Black Forest Bliss", raw: 800, lead: 21, vel: 8, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10029", label: "1 oz", grams: 28, bags: 9 },
-    { variantId: "gid://shopify/ProductVariant/10030", label: "2 oz", grams: 57, bags: 6 },
-    { variantId: "gid://shopify/ProductVariant/10031", label: "4 oz", grams: 113, bags: 9 },
-    { variantId: "gid://shopify/ProductVariant/10032", label: "8 oz", grams: 227, bags: 8 },
+  { id: "peony", name: "White Peony", raw: 1000, lead: 21, vel: 6, sizes: [
+    { variantId: "gid://shopify/ProductVariant/10027", label: "1 oz", grams: 28, bags: 10 },
+    { variantId: "gid://shopify/ProductVariant/10028", label: "2 oz", grams: 57, bags: 15 },
+    { variantId: "gid://shopify/ProductVariant/10029", label: "4 oz", grams: 113, bags: 12 },
+    { variantId: "gid://shopify/ProductVariant/10030", label: "8 oz", grams: 227, bags: 6 },
   ] },
-  { id: "oolong", name: "Maple Oolong", raw: 900, lead: 21, vel: 6, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10033", label: "1 oz", grams: 28, bags: 8 },
-    { variantId: "gid://shopify/ProductVariant/10034", label: "2 oz", grams: 57, bags: 10 },
-    { variantId: "gid://shopify/ProductVariant/10035", label: "4 oz", grams: 113, bags: 8 },
-    { variantId: "gid://shopify/ProductVariant/10036", label: "8 oz", grams: 227, bags: 4 },
+  { id: "chamomile", name: "Chamomile Honey", raw: 1200, lead: 21, vel: 7, sizes: [
+    { variantId: "gid://shopify/ProductVariant/10031", label: "1 oz", grams: 28, bags: 7 },
+    { variantId: "gid://shopify/ProductVariant/10032", label: "2 oz", grams: 57, bags: 12 },
+    { variantId: "gid://shopify/ProductVariant/10033", label: "4 oz", grams: 113, bags: 14 },
+    { variantId: "gid://shopify/ProductVariant/10034", label: "8 oz", grams: 227, bags: 4 },
   ] },
-  { id: "radiant", name: "Radiant Glow", raw: 1000, lead: 21, vel: 7, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10037", label: "1 oz", grams: 28, bags: 10 },
-    { variantId: "gid://shopify/ProductVariant/10038", label: "2 oz", grams: 57, bags: 15 },
-    { variantId: "gid://shopify/ProductVariant/10039", label: "4 oz", grams: 113, bags: 12 },
-    { variantId: "gid://shopify/ProductVariant/10040", label: "8 oz", grams: 227, bags: 6 },
-  ] },
-  { id: "lavender", name: "Lavender Bouquet", raw: 1200, lead: 21, vel: 5, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10041", label: "1 oz", grams: 28, bags: 7 },
-    { variantId: "gid://shopify/ProductVariant/10042", label: "2 oz", grams: 57, bags: 12 },
-    { variantId: "gid://shopify/ProductVariant/10043", label: "4 oz", grams: 113, bags: 14 },
-    { variantId: "gid://shopify/ProductVariant/10044", label: "8 oz", grams: 227, bags: 4 },
-  ] },
-  { id: "cider", name: "Cider House Blend", raw: 700, lead: 18, vel: 4, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10045", label: "1 oz", grams: 28, bags: 10 },
-    { variantId: "gid://shopify/ProductVariant/10046", label: "2 oz", grams: 57, bags: 8 },
-    { variantId: "gid://shopify/ProductVariant/10047", label: "4 oz", grams: 113, bags: 7 },
-    { variantId: "gid://shopify/ProductVariant/10048", label: "8 oz", grams: 227, bags: 9 },
-  ] },
-  { id: "mate", name: "Roasted Mate", raw: 1500, lead: 14, vel: 5, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10049", label: "1 oz", grams: 28, bags: 8 },
-    { variantId: "gid://shopify/ProductVariant/10050", label: "2 oz", grams: 57, bags: 10 },
-    { variantId: "gid://shopify/ProductVariant/10051", label: "4 oz", grams: 113, bags: 6 },
-    { variantId: "gid://shopify/ProductVariant/10052", label: "8 oz", grams: 227, bags: 0 },
-  ] },
-  { id: "cocoa", name: "Cocoa Berry Kiss", raw: 600, lead: 18, vel: 5, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10053", label: "1 oz", grams: 28, bags: 13 },
-    { variantId: "gid://shopify/ProductVariant/10054", label: "2 oz", grams: 57, bags: 5 },
-    { variantId: "gid://shopify/ProductVariant/10055", label: "4 oz", grams: 113, bags: 4 },
-    { variantId: "gid://shopify/ProductVariant/10056", label: "8 oz", grams: 227, bags: 4 },
-  ] },
-  { id: "rose", name: "Serene Rose", raw: 500, lead: 25, vel: 5, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10057", label: "1 oz", grams: 28, bags: 6 },
-    { variantId: "gid://shopify/ProductVariant/10058", label: "2 oz", grams: 57, bags: 9 },
-    { variantId: "gid://shopify/ProductVariant/10059", label: "4 oz", grams: 113, bags: 8 },
-    { variantId: "gid://shopify/ProductVariant/10060", label: "8 oz", grams: 227, bags: 0 },
-  ] },
-  { id: "rosebud", name: "Wild Rosebuds", raw: 300, lead: 25, vel: 4, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10061", label: "1 oz", grams: 28, bags: 3 },
-    { variantId: "gid://shopify/ProductVariant/10062", label: "2 oz", grams: 57, bags: 4 },
-    { variantId: "gid://shopify/ProductVariant/10063", label: "4 oz", grams: 113, bags: 2 },
-    { variantId: "gid://shopify/ProductVariant/10064", label: "8 oz", grams: 227, bags: 0 },
-  ] },
-  { id: "matcha", name: "Luxe Matcha", raw: 450, lead: 30, vel: 7, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10065", label: "1 oz", grams: 28, bags: 22 },
-    { variantId: "gid://shopify/ProductVariant/10066", label: "2 oz", grams: 57, bags: 5 },
-    { variantId: "gid://shopify/ProductVariant/10067", label: "3.5 oz", grams: 99, bags: 3 },
-  ] },
-  { id: "chai", name: "Vanilla Chai-Cha", raw: 600, lead: 30, vel: 11, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10068", label: "1 oz", grams: 28, bags: 17 },
-    { variantId: "gid://shopify/ProductVariant/10069", label: "2 oz", grams: 57, bags: 8 },
-    { variantId: "gid://shopify/ProductVariant/10070", label: "3.5 oz", grams: 99, bags: 4 },
-  ] },
-  { id: "bluematcha", name: "Blue Velvet Matcha", raw: 400, lead: 30, vel: 4, sizes: [
-    { variantId: "gid://shopify/ProductVariant/10071", label: "1 oz", grams: 28, bags: 24 },
-    { variantId: "gid://shopify/ProductVariant/10072", label: "2 oz", grams: 57, bags: 4 },
-    { variantId: "gid://shopify/ProductVariant/10073", label: "3.5 oz", grams: 99, bags: 1 },
+  { id: "gingerdigest", name: "Ginger Digestive", raw: 1200, lead: 18, vel: 10, sizes: [
+    { variantId: "gid://shopify/ProductVariant/10035", label: "1 oz", grams: 28, bags: 8 },
+    { variantId: "gid://shopify/ProductVariant/10036", label: "2 oz", grams: 57, bags: 8 },
+    { variantId: "gid://shopify/ProductVariant/10037", label: "4 oz", grams: 113, bags: 4 },
+    { variantId: "gid://shopify/ProductVariant/10038", label: "8 oz", grams: 227, bags: 9 },
   ] },
 ];
 

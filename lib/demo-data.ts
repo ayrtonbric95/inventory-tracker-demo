@@ -8,25 +8,16 @@ import { SHOPIFY_VARIANT_MAP, SHOPIFY_LOCATIONS, type LocationKey } from "@/lib/
 // Per-tea display name + baseline weekly velocity (bags/wk). Velocity drives the
 // synthetic 90-day sales totals so "Sync velocity from sales" lands near these.
 const DEMO_TEAS: Record<string, { name: string; vel: number }> = {
-  mint: { name: "Moroccan Mint", vel: 13 },
-  darj: { name: "Apricot Darjeeling", vel: 16 },
-  tummy: { name: "Tranquil Tummy", vel: 18 },
-  paradise: { name: "Mornings In Paradise", vel: 14 },
-  mango: { name: "Thai Fiery Mango", vel: 11 },
-  lagoon: { name: "Tropical Blue Lagoon", vel: 7 },
-  keylime: { name: "Silky Key Lime Pie", vel: 8 },
-  blackforest: { name: "Black Forest Bliss", vel: 8 },
-  oolong: { name: "Maple Oolong", vel: 6 },
-  radiant: { name: "Radiant Glow", vel: 7 },
-  lavender: { name: "Lavender Bouquet", vel: 5 },
-  cider: { name: "Cider House Blend", vel: 4 },
-  mate: { name: "Roasted Mate", vel: 5 },
-  cocoa: { name: "Cocoa Berry Kiss", vel: 5 },
-  rose: { name: "Serene Rose", vel: 5 },
-  rosebud: { name: "Wild Rosebuds", vel: 4 },
-  matcha: { name: "Luxe Matcha", vel: 7 },
-  chai: { name: "Vanilla Chai-Cha", vel: 11 },
-  bluematcha: { name: "Blue Velvet Matcha", vel: 4 },
+  earlgrey: { name: "Earl Grey Reserve", vel: 15 },
+  breakfast: { name: "English Breakfast Bold", vel: 12 },
+  oolong: { name: "Toasted Oolong", vel: 8 },
+  sencha: { name: "Sencha Garden Green", vel: 13 },
+  jasmine: { name: "Jasmine Pearl Green", vel: 9 },
+  ceremonial: { name: "Ceremonial Matcha", vel: 9 },
+  gingermatcha: { name: "Ginger Citrus Matcha", vel: 6 },
+  peony: { name: "White Peony", vel: 6 },
+  chamomile: { name: "Chamomile Honey", vel: 7 },
+  gingerdigest: { name: "Ginger Digestive", vel: 10 },
 };
 
 const DAYS = 90;
